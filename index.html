@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>Deployment</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" media="screen" />
+    <script src='slides.js'></script>
+  </head>
+
+  <style>
+    ul li a, p a {border-bottom: 1px dotted white; background-color: white; padding: 2px 5px;}
+
+
+  </style>
+
+  <body style='display: none'>
+
+    <section class='slides layout-regular template-default'>
+
+
+      <article>
+        <h1>
+          Deployment
+          <br><span style="font-size:30px">rails app deployment</span>
+        </h1>
+        <p>
+          July 29, 2014
+        </p>
+      </article>
+
+      <article>
+        <h3>
+          Agenda for Today
+        </h3>
+        <br />
+        <ul class="build">
+          <li>
+            Application Stack
+          </li>
+          <li>
+            Setup &amp; Config
+          </li>
+          <li>
+            Deployment &amp; Capistrano
+          </li>
+          <li>
+            Demo
+          </li>
+        </ul>
+      </article>
+
+
+      <article class='smaller'>
+        <h1>
+          Application Stack
+        </h1>
+      </article>
+
+
+      <article class='smaller'>
+        <p><img class="centered" src="images/stack.png" /></p>
+      </article>
+
+
+      <article class='smaller'>
+        <h3>
+          nginx
+        </h3>
+        <br />
+
+        <ul class="build">
+          <li>
+            reverse proxy
+          </li>
+          <li>
+            redirecting the request to another socket to handle the request.
+          </li>
+          <li>
+            faster at serving static content
+          </li>
+          <li>
+            buffer requests to unicorn
+          </li>
+        </ul>
+      </article>
+
+      <article class='smaller'>
+        <h3>
+          Unicorn
+        </h3>
+        <br />
+
+        <ul class="build">
+          <li>
+            rack based server
+          </li>
+          <li>
+            master - workers, kernel handles the load-balancing
+          </li>
+          <li>
+            workers pull requests
+          </li>
+          <li>
+            https://github.com/blog/517-unicorn
+          </li>
+        </ul>
+      </article>
+
+      <article class='smaller'>
+        <h1>
+          Setup and Config
+        </h1>
+      </article>
+
+
+
+      <article class='smaller'>
+        <h3>
+          <span class="yellow">nginx</span>
+        </h3>
+        <ul>
+        <li>
+          <pre>sudo apt-get install nginx </pre>
+        </li>
+        <li>
+          <pre>touch /etc/nginx/sites-available/deploy_demo.conf</pre>
+        </li>
+        <li>
+          <pre>ln -s /etc/nginx/sites-available/deploy_demo.conf /etc/nginx/sites-enabled/deploy_demo.conf</pre>
+        </li>
+        </ul>
+      </article>
+
+      <article class='smaller'>
+        <h3>
+          <span class="yellow">ruby/rvm</span>
+        </h3>
+        <ul>
+        <li>
+          <pre>curl -sSL https://get.rvm.io | bash<br/>
+source ~/.bashrc</pre>
+        </li>
+        <li>
+          <pre>rvm requirements</pre>
+        </li>
+        <li>
+        <pre>rvm install 2.0.0</pre>
+        </li>
+        <li>
+        <pre>source ~/.rvm/scripts/rvm</pre>
+        </li>
+        </ul>
+      </article>
+
+
+      <article class='smaller'>
+        <h3>
+          <span class="yellow">unicorn</span>
+        </h3>
+        <ul>
+        <li>Add unicorn to gem file and bundle<br/>
+          <pre>gem unicorn</pre>
+        </li>
+        <li>Sample config<br/>
+          <pre>https://github.com/defunkt/unicorn/tree/master/examples</pre>
+        </li>
+        <li>Start unicorn<br/>
+          <pre>bundle exec unicorn -c config/unicorn.rb -D -E production</pre>
+        </li>
+
+        <li>
+          Exercise 1 - create a rails application and run it on unicorn
+        </li>
+        </ul>
+      </article>
+      <article>
+      <ul>
+        <li><a href="http://dave.is/unicorn.html">http://dave.is/unicorn.html</a></li>
+      </ul>
+      </article>
+
+
+
+      <article>
+        <h3>
+          Deployment Steps
+        </h3>
+        <ul>
+          <li>
+            Get latest code from version control
+          </li>
+          <li>
+            Run / restart unicorn in the server
+          </li>
+          <li>
+            start nginx server talking to unicorn
+          </li>
+        </ul>
+      </article>
+
+     <article>
+        <h3>
+          Capistrano
+        </h3>
+        <ul>
+          <li>
+            tool for running scripts on multiple servers
+          </li>
+          <li>
+            Installation - Add capistrano to gem file
+          </li>
+          <li>
+            capify<br />
+            <pre>bundle exec cap install</pre>
+          </li>
+        </ul>
+      </article>
+
+
+     <article>
+        <h3>
+          Capistrano
+        </h3>
+        <ul>
+          <li>
+            Stages - production.rb - define web, app, db server
+          </li>
+          <li>
+            ssh config
+          </li>
+          <li>
+            deploy<br />
+            <pre>bundle exec cap production deploy</pre>
+          </li>
+          <li>
+            post deploy<br />
+            <pre>bundle exec cap production deploy:start</pre>
+          </li>
+        </ul>
+      </article>
+      <article>
+        <h1>
+          Thank you!
+        </h1>
+
+      </article>
+
+    </section>
+
+  </body>
+</html>

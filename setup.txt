@@ -1,0 +1,37 @@
+sudo apt-get update
+sudo apt-get install nginx
+
+
+touch /etc/nginx/sites-available/deploy_demo.conf
+
+ln -s /etc/nginx/sites-available/deploy_demo.conf /etc/nginx/sites-enabled/deploy_demo.conf
+
+
+sudo apt-get install zlib1g zlib1g-dev build-essential openssl libssl-dev libyaml-dev
+sudo apt-get install git nodejs
+sudo apt-get install libmysqlclient18 libmysql++-dev libmysqlclient-dev mysql-server mysql-client mysql-common
+
+
+#add unicorn in Gemfile
+bundle
+
+bundle exec unicorn -p 8080 -c config/unicorn.rb -D -E production
+
+#install rvm
+curl -sSL https://get.rvm.io | bash
+source ~/.bashrc
+rvm requirements
+
+rvm install 2.0.0
+source ~/.rvm/scripts/rvm
+
+cd /var/www/deploy_demo1
+
+#add in gemfile
+gem 'capistrano',  '~> 3.1'
+gem 'capistrano-rails', '~> 1.1'
+
+rvm --default use 2.0.0
+
+bundle
+bundle exec cap install
